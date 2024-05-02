@@ -39,8 +39,12 @@ jobs:
     - name: Install the latest CMake
       uses: lukka/get-cmake@latest
     
-    - name: Install conan & ninja
-      run: python -m pip install conan ninja
+    - name: Install conan
+      run: python -m pip install conan
+
+    - name: Install ninja
+      if: runner.os != 'Windows'
+      run: python -m pip install ninja
 
     - name: Configure
       run: cmake --preset=${{ matrix.preset_tag }}-${{ matrix.build_type }}
@@ -54,8 +58,6 @@ jobs:
       run: ./main
 
     - name: Windows - Run main
-      working-directory: out/build/${{ matrix.preset_tag }}-${{ matrix.build_type }}
+      working-directory: out/build/${{ matrix.preset_tag }}-${{ matrix.build_type }}/${{ matrix.build_type }}
       if: runner.os == 'Windows'
-      run: |
-        dir
-        main.exe
+      run: main.exe
