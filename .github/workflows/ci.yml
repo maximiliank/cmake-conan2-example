@@ -48,5 +48,12 @@ jobs:
     - name: Build
       run: cmake --build out/build/${{ matrix.preset_tag }}-${{ matrix.build_type }} --target main
 
-    - name: Run GTest
-      run: out/build/${{ matrix.preset_tag }}-${{ matrix.build_type }}/main
+    - name: Unix - Run main
+      working-directory: out/build/${{ matrix.preset_tag }}-${{ matrix.build_type }}
+      if: runner.os != 'Windows'
+      run: ./main
+
+    - name: Windows - Run main
+      working-directory: out/build/${{ matrix.preset_tag }}-${{ matrix.build_type }}
+      if: runner.os == 'Windows'
+      run: main.exe
