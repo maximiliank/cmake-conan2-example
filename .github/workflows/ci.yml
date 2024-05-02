@@ -60,7 +60,13 @@ jobs:
     - name: Windows - Run main
       working-directory: out/deploy/${{ matrix.preset_tag }}-${{ matrix.build_type }}
       if: runner.os == 'Windows'
-      run: |
-        pwd
-        dir  
-        main.exe
+      run: pwd
+
+    - name: Windows - Run main
+      working-directory: out/deploy/${{ matrix.preset_tag }}-${{ matrix.build_type }}
+      if: runner.os == 'Windows'
+      run: dir  
+
+    - name: Windows - Run main
+      if: runner.os == 'Windows'
+      run: out/deploy/${{ matrix.preset_tag }}-${{ matrix.build_type }}/main.exe
