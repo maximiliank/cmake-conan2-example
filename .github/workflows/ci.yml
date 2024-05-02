@@ -68,5 +68,6 @@ jobs:
       run: dir  
 
     - name: Windows - Run main
+      working-directory: out/deploy/${{ matrix.preset_tag }}-${{ matrix.build_type }}
       if: runner.os == 'Windows'
-      run: out/deploy/${{ matrix.preset_tag }}-${{ matrix.build_type }}/main.exe
+      run: .\main.exe
