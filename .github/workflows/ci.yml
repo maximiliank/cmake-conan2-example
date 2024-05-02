@@ -60,4 +60,7 @@ jobs:
     - name: Windows - Run main
       working-directory: out/build/${{ matrix.preset_tag }}-${{ matrix.build_type }}/${{ matrix.build_type }}
       if: runner.os == 'Windows'
-      run: main.exe
+      run: |
+        pwd
+        dir
+        main.exe
