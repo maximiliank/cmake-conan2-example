@@ -1,0 +1,53 @@
+name: Tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  standard:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'windows-latest']
+        build_type: ['release', 'debug']
+        python: ['3.12']
+
+        include:
+            - { os: ubuntu-latest, preset_tag: unixlike-gcc }
+            - { os: windows-latest, preset_tag: windows-msvc }
+
+    name: "${{ matrix.os }} [${{ matrix.build_type }}]"
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Python ${{ matrix.python }}
+      uses: actions/setup-python@v5
+      id: setup_python
+      with:
+        python-version: ${{ matrix.python }}
+        cache: 'pip'
+
+    - name: Install the latest CMake
+      uses: lukka/get-cmake@latest
+    
+    - name: Install conan & ninja
+      run: python -m pip install conan ninja
+
+    - name: Configure
+      run: cmake --preset=${{ matrix.preset_tag }}-${{ matrix.build_type }}
+
+    - name: Build
+      run: cmake --build out/build/${{ matrix.preset_tag }}-${{ matrix.build_type }} --target main
+
+    - name: Run GTest
+      run: out/build/${{ matrix.preset_tag }}-${{ matrix.build_type }}/main
